@@ -1,9 +1,21 @@
+import axios from 'axios';
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+const entryPoint = document.querySelector('.cards');
+axios.get(`https://api.github.com/users/krueng`).then(res => {
+  const githubData = res.data;
+  const githubNode = githubCard(githubData);
+  entryPoint.appendChild(githubNode);
+  console.log(githubNode);
 
+})
+
+//  console.log(axiosGet);
+// 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -28,8 +40,73 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
+// followersArray.forEach(follower => {
+//   axios.get(`https://api.github.com/users/${follower}`).then(res => {
+//     // console.log(res.data.Object.keys[0])
+//     const githubData = res.data;
+
+//     const githubNode = githubCard(githubData);
+
+//     console.log(githubNode);
+//     // for (let i=0; i<Object.keys(resp.data).length; i++){
+//     //   const name = {name: resp.data.Object.keys[i]}
+//     // }
+//   })
+// })
+
+function githubCard({ avatar_url, name, login, location, html_url, followers, following, bio }) {
+
+  //Init
+  const divCard = document.createElement('div');
+  const img = document.createElement('img');
+  const divCardInfo = document.createElement('div');
+  const hName = document.createElement('h3');
+  const pUserName = document.createElement('p');
+  const pLocation = document.createElement('p');
+  const pProfile = document.createElement('p');
+  const aGhUrl = document.createElement('a');
+  const pFollowers = document.createElement('p');
+  const pFollowing = document.createElement('p');
+  const pBio = document.createElement('p');
+
+  //structure like HTML
+  divCard.appendChild(img);
+  divCard.appendChild(divCardInfo);
+  divCardInfo.appendChild(hName);
+  divCardInfo.appendChild(pUserName);
+  divCardInfo.appendChild(pLocation);
+  divCardInfo.appendChild(pProfile);
+  divCardInfo.appendChild(pFollowers);
+  divCardInfo.appendChild(pFollowing);
+  divCardInfo.appendChild(pBio);
+  // pProfile.appendChild(aGhUrl);
+
+  console.log({ pProfile })
+
+  //classes
+  divCard.classList.add('card');
+  divCardInfo.classList.add('card-info');
+  hName.classList.add('name');
+  pUserName.classList.add('username');
+
+  //Assigning
+  img.src = avatar_url
+  hName.textContent = name;
+  pUserName.textContent = login;
+  pLocation.textContent = `Location: ${location}`;
+  aGhUrl.href = html_url;
+  aGhUrl.textContent = html_url;
+  pProfile.textContent = `Profile: ${aGhUrl}`
+  pFollowers.textContent = `Followers: ${followers}`;
+  pFollowing.textContent = `Following: ${following}`;
+  pBio.textContent = `Bio: ${bio}`;
+
+  return divCard;
+}
+
+// console.log(githubCard(axiosGet));
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
