@@ -6,13 +6,72 @@ import axios from 'axios';
     https://api.github.com/users/<your name>
 */
 const entryPoint = document.querySelector('.cards');
-axios.get(`https://api.github.com/users/krueng`).then(res => {
-  const githubData = res.data;
-  const githubNode = githubCard(githubData);
-  entryPoint.appendChild(githubNode);
-  console.log(githubNode);
 
-})
+const getGithub = async (arrFollowers) => {
+  try {
+    const res = await axios.get(`https://api.github.com/users/krueng`)
+
+    const githubData = res.data;
+    const githubNode = githubCard(githubData);
+    entryPoint.appendChild(githubNode);
+
+    arrFollowers.forEach(async name => {
+      const res = await axios.get(`https://api.github.com/users/${name}`)
+      const githubData = res.data;
+      const githubNode = githubCard(githubData);
+      entryPoint.appendChild(githubNode);
+    })
+  } catch (error) {
+    const errTxt = document.createElement('p');
+    errTxt.textContent = 'Please try again!'
+    entryPoint.appendChild(errTxt);
+  } finally {
+    console.log('All good!')
+  }
+}
+
+// const getGithub = async () => {
+//   try {
+//     const res = await axios.get(`https://api.github.com/users/krueng`)
+
+//     const githubData = res.data;
+//     // console.log(githubData);
+//     const githubNode = githubCard(githubData);
+//     entryPoint.appendChild(githubNode);
+
+//     const followers = await axios.get(githubData.followers_url);
+//     console.log(followers);
+//     const followersData = followers.data;
+
+//     followersData.forEach(async follower => {
+//       const res = await axios.get(`https://api.github.com/users/${follower.login}`)
+//       const githubData = res.data;
+//       const githubNode = githubCard(githubData);
+//       entryPoint.appendChild(githubNode);
+//     })
+//   } catch (error) {
+//     const errTxt = document.createElement('p');
+//     errTxt.textContent = 'Please try again!'
+//     entryPoint.appendChild(errTxt);
+//   } finally {
+//     console.log('All good!')
+//   }
+// }
+
+// axios.get(`https://api.github.com/users/krueng`).then(res => {
+//   const githubData = res.data;
+//   const githubNode = githubCard(githubData);
+//   entryPoint.appendChild(githubNode);
+
+//   followersArray.forEach(name => {
+//     const entryPoint = document.querySelector('.cards');
+//   axios.get(`https://api.github.com/users/${name}`).then(res => {
+//     const githubData = res.data;
+//     const githubNode = githubCard(githubData);
+//     entryPoint.appendChild(githubNode);
+//   })
+//   })
+// })
 
 //  console.log(axiosGet);
 // 
@@ -40,21 +99,7 @@ axios.get(`https://api.github.com/users/krueng`).then(res => {
     user, and adding that card to the DOM.
 */
 
-const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
-
-// followersArray.forEach(follower => {
-//   axios.get(`https://api.github.com/users/${follower}`).then(res => {
-//     // console.log(res.data.Object.keys[0])
-//     const githubData = res.data;
-
-//     const githubNode = githubCard(githubData);
-
-//     console.log(githubNode);
-//     // for (let i=0; i<Object.keys(resp.data).length; i++){
-//     //   const name = {name: resp.data.Object.keys[i]}
-//     // }
-//   })
-// })
+const followersArray = ['BrityHemming', 'CRHarding', 'tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
 function githubCard({ avatar_url, name, login, location, html_url, followers, following, bio }) {
 
@@ -71,20 +116,6 @@ function githubCard({ avatar_url, name, login, location, html_url, followers, fo
   const pFollowing = document.createElement('p');
   const pBio = document.createElement('p');
 
-  //structure like HTML
-  divCard.appendChild(img);
-  divCard.appendChild(divCardInfo);
-  divCardInfo.appendChild(hName);
-  divCardInfo.appendChild(pUserName);
-  divCardInfo.appendChild(pLocation);
-  divCardInfo.appendChild(pProfile);
-  divCardInfo.appendChild(pFollowers);
-  divCardInfo.appendChild(pFollowing);
-  divCardInfo.appendChild(pBio);
-  // pProfile.appendChild(aGhUrl);
-
-  console.log({ pProfile })
-
   //classes
   divCard.classList.add('card');
   divCardInfo.classList.add('card-info');
@@ -98,15 +129,27 @@ function githubCard({ avatar_url, name, login, location, html_url, followers, fo
   pLocation.textContent = `Location: ${location}`;
   aGhUrl.href = html_url;
   aGhUrl.textContent = html_url;
-  pProfile.textContent = `Profile: ${aGhUrl}`
+  pProfile.textContent = `Profile: `
   pFollowers.textContent = `Followers: ${followers}`;
   pFollowing.textContent = `Following: ${following}`;
   pBio.textContent = `Bio: ${bio}`;
 
+  //structure like HTML
+  divCard.appendChild(img);
+  divCard.appendChild(divCardInfo);
+  divCardInfo.appendChild(hName);
+  divCardInfo.appendChild(pUserName);
+  divCardInfo.appendChild(pLocation);
+  divCardInfo.appendChild(pProfile);
+  divCardInfo.appendChild(pFollowers);
+  divCardInfo.appendChild(pFollowing);
+  divCardInfo.appendChild(pBio);
+  pProfile.appendChild(aGhUrl);
+
+
   return divCard;
 }
-
-// console.log(githubCard(axiosGet));
+getGithub(followersArray);
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
